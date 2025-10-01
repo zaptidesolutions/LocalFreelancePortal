@@ -37,7 +37,9 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    # Add Test, Coverage reports as well.
-    # - name: Test with pytest
-    #   run: |
-    #       python -m pytest --cov=. --cov-report=xml --exit-zero
+    - name: Run Pytest Tests
+      # Run pytest. If any test fails, this step fails, and the CI run stops.
+      run: |
+        # Use the -v flag for verbose output
+        # You might need to set environment variables here if your app relies on them (e.g., DATABASE_URL)
+        pytest -v 
