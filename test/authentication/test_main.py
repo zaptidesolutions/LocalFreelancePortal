@@ -12,6 +12,11 @@ def test_router_included():
     assert "/token" in routes
     assert "/refresh" in routes
 
+def test_registration_router_included():
+    # Check that the registration router is included
+    routes = [route.path for route in main.api.routes]
+    assert "/signup" in routes
+
 def test_startup_event_called(monkeypatch):
     mock_create_default_users = AsyncMock()
     monkeypatch.setattr(main.start_up, "create_default_users", mock_create_default_users)
