@@ -1,7 +1,12 @@
-from ..service.auth_service import (
-    pwd_context,
-    users_collection
-)
+from passlib.context import CryptContext
+from ..config.config_setup import db
+
+# ---------------- Security Setup ----------------
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# ---------------- MongoDB Setup ----------------
+users_collection = db["users"]
+
 
 # ---------------- Startup: Add default users ----------------
 async def create_default_users():
