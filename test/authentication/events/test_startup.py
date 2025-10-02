@@ -21,6 +21,22 @@ async def test_create_default_users_calls_insert_and_find(mock_users_collection,
          patch('authentication.events.start_up.pwd_context', new=mock_pwd_context):
         await create_default_users()
 
-    # Just verify that find_one and insert_one were called
     assert mock_users_collection.find_one.called
     assert mock_users_collection.insert_one.called
+
+@pytest.mark.asyncio
+async def test_create_default_users_skips_existing_users(mock_users_collection, mock_pwd_context, capsys):
+    # Simulate that both users already exist
+    mock_users_collection.find_one.return_value = {"username": "alice", "hashed_password": "hashed_alice123"}
+
+    with patch('authentication.events.start_up.users_collection', new=mock_users_collection), \
+         patch('authentication.events.start_up.pwd_context', new=mock_pwd_context):
+        await create_default_users()
+
+    # insert_one should not be called since users exist
+    assert not mock_users_collection.insert_one.called
+
+    # Check that the print statement for existing users was called
+    captured = capsys.readouterr()
+    assert "User alice already exists" in captured.out
+    assert "User bob already exists" in captured.out
