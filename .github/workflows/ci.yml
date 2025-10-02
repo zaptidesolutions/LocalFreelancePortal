@@ -37,10 +37,15 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Install Project for Testing  # <--- NEW STEP
+
+    # This command reads setup.py and installs your project
+    # allowing imports like 'authentication.events.start_up' to work.
+    - name: Install Project for Testing  
       run: |
         pip install -e .
 
+
+        
     # Add Test, Coverage reports as well.
     - name: Test with pytest
       run: |
