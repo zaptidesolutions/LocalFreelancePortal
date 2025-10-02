@@ -45,7 +45,6 @@ jobs:
         pip install -e .
 
 
-
     # Add Test, Coverage reports as well.
     - name: Test with pytest and coverage
       run: |
