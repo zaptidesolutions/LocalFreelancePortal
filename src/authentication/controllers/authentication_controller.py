@@ -65,3 +65,14 @@ async def refresh_tokens(refresh_request: RefreshRequest):
         "refresh_token": new_refresh_token,
         "token_type": "bearer"
     }
+
+@router.post("/logout")
+async def logout(refresh_request: RefreshRequest):
+    username = await verify_refresh_token(refresh_request.refresh_token)
+    if not username:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    # Invalidate the refresh token
+    await save_refresh_token(username, None)
+
+    return {"detail": "Logged out successfully"}

@@ -47,3 +47,15 @@ class TestAuthenticationController:
             response = client.post("/refresh", json={"refresh_token": "invalid_refresh"})
             assert response.status_code == 401
             assert response.json()["detail"] == "Invalid refresh token"
+            def test_logout_success(self, client):
+                with patch("authentication.controllers.authentication_controller.verify_refresh_token", new=AsyncMock(return_value="alice")), \
+                     patch("authentication.controllers.authentication_controller.save_refresh_token", new=AsyncMock()):
+                    response = client.post("/logout", json={"refresh_token": "valid_refresh"})
+                    assert response.status_code == 200
+                    assert response.json()["detail"] == "Logged out successfully"
+
+            def test_logout_failure(self, client):
+                with patch("authentication.controllers.authentication_controller.verify_refresh_token", new=AsyncMock(return_value=None)):
+                    response = client.post("/logout", json={"refresh_token": "invalid_refresh"})
+                    assert response.status_code == 401
+                    assert response.json()["detail"] == "Invalid refresh token"
