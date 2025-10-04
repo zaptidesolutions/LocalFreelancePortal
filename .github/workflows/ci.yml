@@ -56,8 +56,8 @@ jobs:
         pip install -e .
 
     # Starts MongoDB service using docker-compose
-    - name: Start MongoDB
-      run: docker-compose -f docker-compose.test.yml up -d
+    # - name: Start MongoDB
+    #   run: docker-compose -f docker-compose.test.yml up -d
 
     # Add Test, Coverage reports as well.
     - name: Test with pytest and coverage
