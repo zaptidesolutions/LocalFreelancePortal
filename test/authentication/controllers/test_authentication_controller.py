@@ -1,9 +1,11 @@
 import pytest
+import pytest_asyncio 
 from unittest.mock import AsyncMock, patch
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from authentication.controllers.authentication_controller import router as auth_router
+from authentication.service.auth_service import blacklist_token
 
 app = FastAPI()
 app.include_router(auth_router)
@@ -50,7 +52,8 @@ class TestAuthenticationController:
 
     def test_logout_success(self, client):
         with patch("authentication.controllers.authentication_controller.verify_refresh_token", new=AsyncMock(return_value="alice")), \
-             patch("authentication.controllers.authentication_controller.save_refresh_token", new=AsyncMock()) as mock_save:
+             patch("authentication.controllers.authentication_controller.save_refresh_token", new=AsyncMock()) as mock_save, \
+             patch("authentication.controllers.authentication_controller.blacklist_token", new=AsyncMock()) as mock_blacklist_token:
             response = client.post("/logout", json={"access_token": "valid_access", "refresh_token": "valid_refresh", "token_type": "bearer"})
             assert response.status_code == 200
             assert response.json()["detail"] == "Logged out successfully"

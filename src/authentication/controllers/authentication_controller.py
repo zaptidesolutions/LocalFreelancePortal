@@ -68,7 +68,7 @@ async def refresh_tokens(refresh_request: RefreshRequest):
     }
 
 @router.post("/logout")
-async def logout(token: Token ):
+async def logout(token: Token):
     username = await verify_refresh_token(token.refresh_token)
     if not username:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
