@@ -1,5 +1,6 @@
 from ..service.auth_service import (
     authenticate_user,
+    blacklist_token,
     create_token,
     save_refresh_token,
     verify_refresh_token
@@ -67,12 +68,12 @@ async def refresh_tokens(refresh_request: RefreshRequest):
     }
 
 @router.post("/logout")
-async def logout(refresh_request: RefreshRequest):
-    username = await verify_refresh_token(refresh_request.refresh_token)
+async def logout(token: Token):
+    username = await verify_refresh_token(token.refresh_token)
     if not username:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
 
     # Invalidate the refresh token
     await save_refresh_token(username, None)
-
+    await blacklist_token(token.access_token)
     return {"detail": "Logged out successfully"}

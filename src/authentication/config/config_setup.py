@@ -9,3 +9,4 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 MONGO_URI = "mongodb://localhost:27017"
 client = AsyncIOMotorClient(MONGO_URI)
 db = client["authentication_db"]
+blacklist_collection = db["token_blacklist"]  
