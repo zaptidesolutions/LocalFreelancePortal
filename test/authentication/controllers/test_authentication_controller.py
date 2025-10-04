@@ -51,13 +51,13 @@ class TestAuthenticationController:
     def test_logout_success(self, client):
         with patch("authentication.controllers.authentication_controller.verify_refresh_token", new=AsyncMock(return_value="alice")), \
              patch("authentication.controllers.authentication_controller.save_refresh_token", new=AsyncMock()) as mock_save:
-            response = client.post("/logout", json={"refresh_token": "valid_refresh"})
+            response = client.post("/logout", json={"access_token": "valid_access", "refresh_token": "valid_refresh", "token_type": "bearer"})
             assert response.status_code == 200
             assert response.json()["detail"] == "Logged out successfully"
             mock_save.assert_awaited_once_with("alice", None)
 
     def test_logout_invalid_token(self, client):
         with patch("authentication.controllers.authentication_controller.verify_refresh_token", new=AsyncMock(return_value=None)):
-            response = client.post("/logout", json={"refresh_token": "invalid_refresh"})
+            response = client.post("/logout", json={"access_token": "invalid_access", "refresh_token": "invalid_refresh", "token_type": "bearer"})
             assert response.status_code == 401
             assert response.json()["detail"] == "Invalid refresh token"

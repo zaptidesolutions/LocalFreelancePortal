@@ -8,7 +8,8 @@ from typing import Optional
 from ..config.config_setup import (
     SECRET_KEY,
     ALGORITHM,
-    db
+    db,
+    blacklist_collection
 )
 
 # ---------------- Security Setup ----------------
@@ -60,3 +61,9 @@ async def verify_refresh_token(refresh_token: str) -> Optional[str]:
         return username
     except JWTError:
         return None
+
+async def blacklist_token(token: str):
+    await blacklist_collection.insert_one({
+        "token": token,
+        "revoked_at": datetime.utcnow()
+    })
